@@ -9,7 +9,6 @@ import me.pengbo.Global;
 import me.pengbo.model.Message;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -92,8 +91,8 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
                 systemMessage.setType(2);
                 systemMessage.setCreateTime(new Date());
                 systemMessage.setTalkFrom("SYSTEM");
-                systemMessage.setMessage("对方不在线");
-                channelHandlerContext.channel().writeAndFlush(new TextWebSocketFrame());
+                systemMessage.setMessage("对方不在线,重新选择对话");
+                channelHandlerContext.channel().writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(systemMessage)));
             }
         }
     }
@@ -101,24 +100,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         ctx.fireChannelInactive();
-        String removeKey = null;
-        for(Map.Entry<String, Channel> entry : Global.channelContextMap.entrySet()) {
-            Channel existChannel = entry.getValue();
-            if(existChannel.equals(ctx.channel())){
-                System.out.println("关闭这个不活跃通道：" + entry.getKey());
-                removeKey = entry.getKey();
-            }else{
-                Message systemMessage = new Message();
-                systemMessage.setTalkFrom("SYSTEM");
-                systemMessage.setType(3);
-                systemMessage.setTalkTo(entry.getKey());
-                systemMessage.setMessage(JSON.toJSONString(Global.channelContextMap.keySet()));
-                String msgJSON = JSON.toJSONString(systemMessage);
-                existChannel.writeAndFlush(new TextWebSocketFrame(msgJSON));
-            }
-        }
-        if(removeKey != null) {
-            Global.channelContextMap.remove(removeKey);
-        }
+        System.out.println("用户下线");
+        Global.remove(ctx.channel());
     }
 }
