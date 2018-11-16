@@ -27,6 +27,7 @@ public class WebSocketServer {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try{
+            System.out.println("starting server on port "+port+" >>>>>");
             ServerBootstrap b  = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
