@@ -1,5 +1,6 @@
 package me.pengbo.model;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
@@ -26,6 +27,10 @@ public class Message implements Serializable {
 
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    public String toJSONString(){
+        return JSON.toJSONString(this);
+    }
 
     public String getTalkTo() {
         return talkTo;

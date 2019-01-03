@@ -54,6 +54,7 @@ public class WebSocketServer {
         }finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+            System.out.println("SERVER STOPED ...");
         }
     }
 }

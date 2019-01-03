@@ -2,12 +2,11 @@ package me.pengbo;
 
 import com.alibaba.fastjson.JSON;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.util.AttributeKey;
 import me.pengbo.model.Message;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,18 +20,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Global{
 
+    public final static AttributeKey<String> CHANNEL_USER_KEY = AttributeKey.newInstance("USER_IDENTIFY");
+
     public final static Map<String, Channel> channelContextMap = new ConcurrentHashMap<String, Channel>();
 
+    /**
+     * 从在线用户map中删除删除
+     * @param channel
+     */
     public static void remove(Channel channel) {
-        Iterator<Map.Entry<String, Channel>> it = channelContextMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, Channel> entry = it.next();
-            Channel existChannel = entry.getValue();
-            if(existChannel.equals(channel)){
-                Global.channelContextMap.remove(entry.getKey());
-                break;
-            }
-        }
+        String key = channel.attr(CHANNEL_USER_KEY).get();
+        channelContextMap.remove(key);
         //所有在线
         String JSONText = JSON.toJSONString(channelContextMap.keySet());
         Message message = new Message();

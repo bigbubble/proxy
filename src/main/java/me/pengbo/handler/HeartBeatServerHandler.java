@@ -22,6 +22,13 @@ import java.util.Map;
  * @since 2018-09-29 14:00
  */
 public class HeartBeatServerHandler extends ChannelInboundHandlerAdapter {
+
+    /**
+     * 移除不常用用户
+     * @param ctx
+     * @param evt
+     * @throws Exception
+     */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception{
         if (evt instanceof IdleStateEvent){
@@ -35,7 +42,8 @@ public class HeartBeatServerHandler extends ChannelInboundHandlerAdapter {
                 msg.setTalkFrom("SYSTEM");
                 msg.setType(2);
                 msg.setCreateTime(new Date());
-                channel.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(msg)));
+                channel.writeAndFlush(new TextWebSocketFrame(msg.toJSONString()));
+                ctx.close();
                 channel.close();
             }
         }else {
