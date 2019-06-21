@@ -26,14 +26,15 @@ public class WebSocketServer {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
-        try{
-            System.out.println("starting server on port "+port+" >>>>>");
-            ServerBootstrap b  = new ServerBootstrap();
+        try {
+            System.out.println("starting server on port " + port + " >>>>>");
+            ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 1024)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             pipeline.addLast("http-codec",
@@ -45,13 +46,13 @@ public class WebSocketServer {
                             pipeline.addLast(new IdleStateHandler(300, 0, 0));
                             pipeline.addLast(new HeartBeatServerHandler());
 
-                            pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65535 ));
+                            pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65535));
                             pipeline.addLast(new WebSocketServerHandler());
                         }
                     });
             Channel ch = b.bind(port).sync().channel();
             ch.closeFuture().sync();
-        }finally {
+        } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
             System.out.println("SERVER STOPED ...");

@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author pengb
  * @since 2018-11-15 10:25
  */
-public class Global{
+public class Global {
 
     public final static AttributeKey<String> CHANNEL_USER_KEY = AttributeKey.newInstance("USER_IDENTIFY");
 
@@ -26,6 +26,7 @@ public class Global{
 
     /**
      * 从在线用户map中删除删除
+     *
      * @param channel
      */
     public static void remove(Channel channel) {
@@ -39,7 +40,7 @@ public class Global{
         message.setTalkFrom("SYSTEM");
         message.setMessage(JSONText);
         TextWebSocketFrame frame = new TextWebSocketFrame(JSON.toJSONString(message));
-        for(Map.Entry<String, Channel> entry : channelContextMap.entrySet()) {
+        for (Map.Entry<String, Channel> entry : channelContextMap.entrySet()) {
             entry.getValue().writeAndFlush(frame);
         }
     }

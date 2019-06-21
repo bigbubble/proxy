@@ -25,10 +25,10 @@ public class Message implements Serializable {
     // 消息体
     private String message;
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    public String toJSONString(){
+    public String toJSONString() {
         return JSON.toJSONString(this);
     }
 
